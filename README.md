@@ -80,12 +80,14 @@ Tournament Management System
 
 ## 🛠️ Tech Stack
 
-> _Update this section with the technologies actually used in your implementation._
-
-- **Frontend:** —
-- **Backend:** —
-- **Database:** —
-- **Other Tools:** —
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 19 + Vite (JavaScript) |
+| **Backend** | Node.js + Express.js |
+| **Database** | MySQL 8.0 (Database: `tournamentData`) |
+| **Auth** | JWT (jsonwebtoken) + bcryptjs |
+| **HTTP Client** | Fetch API (native) |
+| **Styling** | Vanilla CSS (custom design system) |
 
 ---
 
