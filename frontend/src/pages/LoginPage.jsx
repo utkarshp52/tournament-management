@@ -64,12 +64,12 @@ export default function LoginPage() {
             )}
 
             <div className="form-group">
-              <label className="form-label" htmlFor="login-email">Email Address</label>
+              <label className="form-label" htmlFor="login-email">Email or Username</label>
               <input
                 id="login-email"
-                type="email"
+                type="text"
                 className="form-control"
-                placeholder="admin@tournament.com"
+                placeholder="admin@tournament.com or admin"
                 value={form.email}
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                 required

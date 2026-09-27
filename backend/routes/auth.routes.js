@@ -6,13 +6,15 @@ const router   = express.Router();
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ error: 'Email and password are required' });
+  const { email, username, password } = req.body;
+  const loginId = (email || username || '').trim();
+  if (!loginId || !password)
+    return res.status(400).json({ error: 'Email or username and password are required' });
 
   try {
     const [rows] = await db.execute(
-      'SELECT * FROM users WHERE email = ? LIMIT 1', [email]
+      'SELECT * FROM users WHERE LOWER(email) = LOWER(?) OR LOWER(username) = LOWER(?) LIMIT 1',
+      [loginId, loginId]
     );
     if (!rows.length)
       return res.status(401).json({ error: 'Invalid credentials' });
