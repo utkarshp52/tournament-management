@@ -80,11 +80,13 @@ export const umpireApi = {
 
 // ── Matches ─────────────────────────────────────────────
 export const matchApi = {
-  getAll:  (q = {}) => api.get(`/matches?${new URLSearchParams(q)}`),
-  getOne:  (id)     => api.get(`/matches/${id}`),
-  create:  (data)   => api.post('/matches', data),
-  update:  (id, d)  => api.put(`/matches/${id}`, d),
-  remove:  (id)     => api.delete(`/matches/${id}`),
+  getAll:           (q = {}) => api.get(`/matches?${new URLSearchParams(q)}`),
+  getOne:           (id)     => api.get(`/matches/${id}`),
+  create:           (data)   => api.post('/matches', data),
+  update:           (id, d)  => api.put(`/matches/${id}`, d),
+  remove:           (id)     => api.delete(`/matches/${id}`),
+  generateFixtures: (data)   => api.post('/matches/generate', data),
+  clearFixtures:    (tid)    => api.delete(`/matches/clear/${tid}`),
 };
 
 // ── Results ─────────────────────────────────────────────
