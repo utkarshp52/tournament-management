@@ -14,14 +14,6 @@ function ComingSoon({ icon, title, phase, desc }) {
   );
 }
 
-export function MatchesPage() {
-  return <ComingSoon icon="📅" title="Match Schedule" phase="Phase 3" desc="Fixture generation, scheduling, and venue/umpire assignment coming in Phase 3." />;
-}
-
-export function ResultsPage() {
-  return <ComingSoon icon="✅" title="Match Results" phase="Phase 3" desc="Result entry and automatic standings update coming in Phase 3." />;
-}
-
 export function StandingsPage() {
   return <ComingSoon icon="📋" title="Points Table" phase="Phase 4" desc="Live standings, wins/losses, and rankings coming in Phase 4." />;
 }

@@ -684,3 +684,547 @@ select.form-control option { background: var(--clr-surface); }
 .text-xs      { font-size: 11px; }
 .font-bold    { font-weight: 700; }
 .w-full       { width: 100%; }
+
+/* ======================================================
+   PHASE 3 — SCHEDULING & MATCH MANAGEMENT STYLES
+   ====================================================== */
+
+/* ── Schedule Filters Bar ────────────────────────────── */
+.schedule-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--grad-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+}
+
+.schedule-stats {
+  display: flex;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+.schedule-stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.2);
+  min-width: 70px;
+}
+
+.schedule-stat-chip.completed {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(16,185,129,0.2);
+}
+
+.schedule-stat-chip.scheduled {
+  background: rgba(59,130,246,0.1);
+  border-color: rgba(59,130,246,0.2);
+}
+
+.schedule-stat-number {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--clr-text-primary);
+}
+
+.schedule-stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--clr-text-muted);
+  font-weight: 600;
+}
+
+/* ── Schedule Timeline ───────────────────────────────── */
+.schedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.schedule-date-group {
+  animation: slideUp 0.3s ease;
+}
+
+.schedule-date-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.schedule-date-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.schedule-date-day {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--clr-primary-light);
+  text-transform: uppercase;
+  background: rgba(99,102,241,0.12);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.schedule-date-full {
+  font-size: 14px;
+  color: var(--clr-text-secondary);
+  font-weight: 500;
+}
+
+.schedule-matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* ── Match Card ──────────────────────────────────────── */
+.match-card {
+  background: var(--grad-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  display: grid;
+  grid-template-columns: 50px 1fr auto auto;
+  grid-template-rows: auto auto;
+  gap: var(--space-sm) var(--space-md);
+  align-items: center;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.match-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--clr-primary);
+  transition: width var(--transition-base);
+}
+
+.match-card.completed::before { background: var(--clr-success); }
+.match-card.ongoing::before { background: var(--clr-warning); animation: pulse-glow 2s infinite; }
+.match-card.postponed::before { background: var(--clr-warning); }
+.match-card.cancelled::before { background: var(--clr-danger); }
+
+.match-card:hover {
+  border-color: var(--clr-border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
+}
+
+.match-card-number {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--clr-text-muted);
+  background: var(--clr-surface-2);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  grid-row: 1 / 3;
+}
+
+.match-card-teams {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.match-team {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.match-team .team-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--clr-text-primary);
+}
+
+.match-team.winner .team-name {
+  color: var(--clr-success);
+}
+
+.match-team .team-score {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  background: rgba(16,185,129,0.12);
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--clr-success);
+}
+
+.match-vs {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.match-card-info {
+  grid-column: 2;
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.match-info-item {
+  font-size: 12px;
+  color: var(--clr-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.match-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  grid-row: 1 / 3;
+}
+
+.match-card-result {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: var(--clr-success);
+  font-weight: 600;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--clr-border);
+}
+
+/* Match edit modal teams display */
+.match-edit-teams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--clr-bg-2);
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ── Results Page Styles ─────────────────────────────── */
+.result-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--clr-surface-2);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  margin-bottom: var(--space-xl);
+  width: fit-content;
+}
+
+.result-tab {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: var(--clr-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.result-tab:hover {
+  color: var(--clr-text-primary);
+}
+
+.result-tab.active {
+  background: var(--clr-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.3);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+/* ── Result Card ─────────────────────────────────────── */
+.result-card {
+  background: var(--grad-card);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+  animation: slideUp 0.3s ease;
+}
+
+.result-card:hover {
+  border-color: var(--clr-border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.result-card.completed {
+  border-color: rgba(16,185,129,0.2);
+}
+
+.result-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--clr-border);
+  background: var(--clr-surface-2);
+}
+
+.result-match-num {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--clr-text-muted);
+}
+
+.result-card-body {
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.result-team {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  text-align: center;
+}
+
+.result-team-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--clr-text-primary);
+}
+
+.result-team.winner .result-team-name {
+  color: var(--clr-success);
+}
+
+.result-team-score {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--clr-text-primary);
+  line-height: 1;
+}
+
+.result-team.winner .result-team-score {
+  color: var(--clr-success);
+}
+
+.result-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.result-vs {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.result-draw-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--clr-warning);
+  background: rgba(245,158,11,0.15);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+}
+
+.result-card-meta {
+  padding: var(--space-sm) var(--space-lg);
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--clr-text-muted);
+  border-top: 1px solid var(--clr-border);
+}
+
+.result-card-action {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--clr-border);
+}
+
+/* ── Result Modal Styles ─────────────────────────────── */
+.result-modal-matchup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-lg);
+  align-items: center;
+  padding: var(--space-lg);
+  background: var(--clr-bg-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--clr-border);
+}
+
+.result-modal-team {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.result-modal-team-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--clr-text-primary);
+  text-align: center;
+}
+
+.result-modal-vs {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--clr-text-muted);
+  text-align: center;
+}
+
+.result-score-input {
+  text-align: center;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  font-family: 'Outfit', sans-serif !important;
+  padding: 12px !important;
+}
+
+.result-draw-toggle {
+  padding: var(--space-md);
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius-md);
+}
+
+.result-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--clr-text-secondary);
+  cursor: pointer;
+}
+
+.result-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--clr-warning);
+  cursor: pointer;
+}
+
+.result-winner-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.result-winner-btn {
+  padding: 12px var(--space-md);
+  background: var(--clr-surface-2);
+  border: 2px solid var(--clr-border);
+  border-radius: var(--radius-md);
+  color: var(--clr-text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.result-winner-btn:hover {
+  border-color: var(--clr-primary);
+  color: var(--clr-text-primary);
+}
+
+.result-winner-btn.selected {
+  border-color: var(--clr-success);
+  background: rgba(16,185,129,0.12);
+  color: var(--clr-success);
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.3);
+}
+
+/* ── Responsive Overrides (Phase 3) ──────────────────── */
+@media (max-width: 900px) {
+  .match-card {
+    grid-template-columns: 40px 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .match-card-actions {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .match-card-info {
+    grid-column: 1 / -1;
+  }
+
+  .schedule-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .schedule-stats {
+    margin-left: 0;
+  }
+
+  .result-modal-matchup {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .result-modal-vs {
+    padding: var(--space-sm) 0;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .match-card-teams {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .result-winner-buttons {
+    grid-template-columns: 1fr;
+  }
+}
