@@ -97,18 +97,23 @@ export const resultApi = {
 
 // ── Standings ────────────────────────────────────────────
 export const standingApi = {
-  get: (tid) => api.get(`/standings?tournament_id=${tid}`),
+  get:     (tid) => api.get(`/standings?tournament_id=${tid}`),
+  summary: (tid) => api.get(`/standings/summary?tournament_id=${tid}`),
 };
 
 // ── Stats ────────────────────────────────────────────────
 export const statsApi = {
-  players: (tid) => api.get(`/stats/players?tournament_id=${tid}`),
-  teams:   (tid) => api.get(`/stats/teams?tournament_id=${tid}`),
+  players:     (tid, sort) => api.get(`/stats/players?tournament_id=${tid}${sort ? `&sort_by=${sort}` : ''}`),
+  teams:       (tid) => api.get(`/stats/teams?tournament_id=${tid}`),
+  leaderboard: (tid) => api.get(`/stats/leaderboard?tournament_id=${tid}`),
 };
 
 // ── Knockout ─────────────────────────────────────────────
 export const knockoutApi = {
-  get:    (tid)      => api.get(`/knockout?tournament_id=${tid}`),
-  create: (data)     => api.post('/knockout', data),
-  update: (id, data) => api.put(`/knockout/${id}`, data),
+  get:          (tid)      => api.get(`/knockout?tournament_id=${tid}`),
+  generate:     (data)     => api.post('/knockout/generate', data),
+  recordWinner: (data)     => api.post('/knockout/record-winner', data),
+  create:       (data)     => api.post('/knockout', data),
+  update:       (id, data) => api.put(`/knockout/${id}`, data),
+  clear:        (tid)      => api.delete(`/knockout/clear/${tid}`),
 };
