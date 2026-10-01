@@ -9,7 +9,9 @@ import VenuesPage from './pages/VenuesPage';
 import UmpiresPage from './pages/UmpiresPage';
 import MatchesPage from './pages/MatchesPage';
 import ResultsPage from './pages/ResultsPage';
-import { StandingsPage, StatisticsPage, KnockoutPage } from './pages/PlaceholderPages';
+import StandingsPage from './pages/StandingsPage';
+import StatisticsPage from './pages/StatisticsPage';
+import KnockoutPage from './pages/KnockoutPage';
 import Sidebar from './components/Sidebar';
 import { Spinner } from './components/UI';
 
