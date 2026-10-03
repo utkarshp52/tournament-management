@@ -19,6 +19,7 @@ const NAV_ITEMS = [
     { id: 'standings',    icon: '📋', label: 'Standings' },
     { id: 'statistics',   icon: '📈', label: 'Statistics' },
     { id: 'knockout',     icon: '🥇', label: 'Knockout' },
+    { id: 'reports',      icon: '📄', label: 'Reports' },
   ]},
 ];
 

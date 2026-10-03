@@ -12,6 +12,7 @@ import ResultsPage from './pages/ResultsPage';
 import StandingsPage from './pages/StandingsPage';
 import StatisticsPage from './pages/StatisticsPage';
 import KnockoutPage from './pages/KnockoutPage';
+import ReportsPage from './pages/ReportsPage';
 import Sidebar from './components/Sidebar';
 import { Spinner } from './components/UI';
 
@@ -27,6 +28,7 @@ const PAGES = {
   standings:   StandingsPage,
   statistics:  StatisticsPage,
   knockout:    KnockoutPage,
+  reports:     ReportsPage,
 };
 
 function AppInner() {
