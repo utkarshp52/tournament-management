@@ -1970,3 +1970,372 @@ select.form-control option { background: var(--clr-surface); }
     align-items: stretch;
   }
 }
+
+/* ======================================================
+   PHASE 5 — REPORTS PAGE
+   ====================================================== */
+
+/* ── Selector bar ─────────────────────────────────────── */
+.report-selector-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+}
+
+.report-tournament-meta {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
+  padding-bottom: 4px;
+}
+
+/* ── Champion Banner ──────────────────────────────────── */
+.champion-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e3a5f 100%);
+  border: 2px solid rgba(245,158,11,0.4);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3xl) var(--space-xl);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+  box-shadow: 0 0 40px rgba(245,158,11,0.15), var(--shadow-lg);
+}
+
+.champion-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  left: var(--x, 50%);
+  font-size: 24px;
+  animation: confetti-fall 4s ease-in var(--delay, 0s) infinite;
+  opacity: 0.8;
+}
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0.9; }
+  80%  { opacity: 0.6; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+.champion-content { position: relative; z-index: 1; }
+
+.champion-trophy {
+  font-size: 72px;
+  display: block;
+  margin-bottom: var(--space-md);
+  filter: drop-shadow(0 0 16px rgba(245,158,11,0.6));
+  animation: trophy-pulse 2s ease-in-out infinite;
+}
+
+@keyframes trophy-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.06); }
+}
+
+.champion-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--clr-accent);
+  margin-bottom: var(--space-sm);
+}
+
+.champion-name {
+  font-size: 42px;
+  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(245,158,11,0.4);
+  margin-bottom: var(--space-sm);
+  line-height: 1.1;
+}
+
+.champion-meta {
+  font-size: 14px;
+  color: var(--clr-text-secondary);
+  margin-bottom: 4px;
+}
+
+.champion-runner-up {
+  display: inline-block;
+  margin-top: var(--space-md);
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  color: var(--clr-text-secondary);
+}
+
+.champion-tournament-name {
+  margin-top: var(--space-md);
+  font-size: 13px;
+  color: var(--clr-text-muted);
+  letter-spacing: 1px;
+}
+
+/* ── Report Metrics Grid ─────────────────────────────── */
+.report-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+/* ── Report Tabs ─────────────────────────────────────── */
+.report-tabs {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.report-tabs::-webkit-scrollbar { display: none; }
+
+/* ── Performers Grid ─────────────────────────────────── */
+.report-performers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.performers-list {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.performer-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--clr-surface-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--clr-border);
+  transition: border-color var(--transition-fast);
+}
+
+.performer-row:hover { border-color: var(--clr-border-hover); }
+
+.performer-rank {
+  font-size: 20px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.performer-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.performer-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--clr-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.performer-team {
+  font-size: 11px;
+  color: var(--clr-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.performer-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 48px;
+}
+
+.performer-val {
+  font-size: 20px;
+  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  color: var(--clr-accent);
+  line-height: 1;
+}
+
+.performer-stat-label {
+  font-size: 10px;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* ── Knockout Summary ────────────────────────────────── */
+.report-knockout-summary {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.knockout-stage-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.knockout-stage-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--clr-text-muted);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.knockout-stage-matches {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.knockout-mini-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.knockout-mini-card.final-card {
+  border-color: rgba(245,158,11,0.3);
+  background: linear-gradient(135deg, rgba(245,158,11,0.05), var(--clr-surface-2));
+}
+
+.ko-vs {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ko-winner {
+  font-weight: 800;
+  color: var(--clr-accent);
+}
+
+.ko-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(16,185,129,0.15);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--clr-success);
+}
+
+.ko-result.champion-result {
+  background: rgba(245,158,11,0.15);
+  border-color: rgba(245,158,11,0.4);
+  color: var(--clr-accent);
+  font-size: 14px;
+}
+
+/* ── Report Detail Grid ──────────────────────────────── */
+.report-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--clr-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: var(--space-md);
+}
+
+.report-detail-item {
+  padding: var(--space-md);
+  background: var(--clr-surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-detail-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--clr-text-muted);
+}
+
+.report-detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--clr-text-primary);
+}
+
+/* ── Report Summary Section ──────────────────────────── */
+.report-summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ── Print Styles ────────────────────────────────────── */
+@media print {
+  .sidebar, .main-top-bar, .report-selector-bar,
+  .result-tabs, .btn, button { display: none !important; }
+
+  .main-content { margin-left: 0 !important; }
+  .champion-banner { break-inside: avoid; }
+  .report-metrics-grid { grid-template-columns: repeat(3, 1fr); }
+  body { background: #fff; color: #000; }
+  .card { border: 1px solid #ddd; box-shadow: none; }
+}
+
+/* ── Responsive: Reports ─────────────────────────────── */
+@media (max-width: 900px) {
+  .report-performers-grid {
+    grid-template-columns: 1fr;
+  }
+  .report-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .report-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .champion-name { font-size: 28px; }
+}
+
+@media (max-width: 600px) {
+  .report-metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .knockout-mini-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+

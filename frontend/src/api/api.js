@@ -117,3 +117,9 @@ export const knockoutApi = {
   update:       (id, data) => api.put(`/knockout/${id}`, data),
   clear:        (tid)      => api.delete(`/knockout/clear/${tid}`),
 };
+
+// ── Reports ──────────────────────────────────────────────
+export const reportApi = {
+  summary:         (tid) => api.get(`/reports/summary?tournament_id=${tid}`),
+  listTournaments: ()    => api.get('/reports/tournaments'),
+};
