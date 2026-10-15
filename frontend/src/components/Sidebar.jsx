@@ -60,11 +60,11 @@ export default function Sidebar({ activePage, onNavigate }) {
       {/* Footer */}
       <div className="sidebar-footer">
         <div style={{ marginBottom: '12px' }}>
-          <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--clr-text-primary)' }}>
+          <div style={{ fontSize: '13.5px', fontWeight: 700, color: '#f8fafc', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {user?.full_name || user?.username}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--clr-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            {user?.role}
+          <div style={{ fontSize: '10.5px', color: 'var(--clr-primary-light)', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 700 }}>
+            ⚡ {user?.role || 'Admin'}
           </div>
         </div>
         <button
