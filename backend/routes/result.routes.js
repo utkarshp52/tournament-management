@@ -122,7 +122,7 @@ router.post('/', authMiddleware, async (req, res) => {
     );
     for (let i = 0; i < allStandings.length; i++) {
       await conn.execute(
-        'UPDATE standings SET rank = ? WHERE standing_id = ?',
+        'UPDATE standings SET rank_position = ? WHERE standing_id = ?',
         [i + 1, allStandings[i].standing_id]
       );
     }

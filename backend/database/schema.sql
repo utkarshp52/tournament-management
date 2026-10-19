@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS standings (
   net_run_rate    DECIMAL(8,4)  DEFAULT 0.0000,    -- sport-specific
   goals_for       INT           DEFAULT 0,
   goals_against   INT           DEFAULT 0,
-  rank            INT,
+  rank_position   INT,
   updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
   FOREIGN KEY (team_id)       REFERENCES teams(team_id)            ON DELETE CASCADE,
