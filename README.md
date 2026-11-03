@@ -317,6 +317,47 @@ All management routes require an `Authorization: Bearer <JWT_TOKEN>` header.
 
 ---
 
+## 🚀 Deployment on Render
+
+This project is fully prepared for zero-friction deployment on [Render](https://render.com).
+
+### 1. Database Options for Render
+Render supports MySQL via two options:
+* **Option A (All on Render via Docker Private Service):** In Render, click **New +** → **Private Service**, deploy from Docker using `mysql:8.0` with a persistent disk mounted to `/var/lib/mysql`.
+* **Option B (Free Cloud MySQL + Render Free Tier):** Provision a free cloud MySQL database (e.g. Aiven, TiDB Cloud, or Railway), copy the connection string, and set it as `DATABASE_URL` in Render.
+
+### 2. Deploying Backend (Web Service)
+1. In Render Dashboard, click **New +** → **Web Service** and connect this repository.
+2. Configure settings:
+   - **Root Directory:** `backend`
+   - **Environment:** `Node`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+3. Add Environment Variables:
+   - `NODE_ENV`: `production`
+   - `AUTO_MIGRATE`: `true` *(Automatically runs schema and seeds initial admin)*
+   - `JWT_SECRET`: *(A secure random string)*
+   - `DATABASE_URL`: *(Your MySQL connection string, e.g. `mysql://user:pass@host:3306/tournamentData`)*
+   - `FRONTEND_URL`: *(Your frontend URL on Render, or `*`)*
+
+### 3. Deploying Frontend (Static Site)
+1. In Render Dashboard, click **New +** → **Static Site** and connect this repository.
+2. Configure settings:
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm install && npm run build`
+   - **Publish Directory:** `dist`
+3. Add Environment Variable:
+   - `VITE_API_URL`: `https://<your-backend-name>.onrender.com/api`
+4. Add Rewrite Rule under **Redirects/Rewrites**:
+   - **Source:** `/*` → **Destination:** `/index.html` → **Action:** `Rewrite`
+
+### 4. Default Login Credentials
+Once deployed, the auto-seeded credentials are:
+* **Email:** `admin@tournament.com`
+* **Password:** `Admin@123`
+
+---
+
 ## 📌 Future Enhancements
 
 - 📱 Mobile application support (React Native)
