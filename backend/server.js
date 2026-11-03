@@ -81,7 +81,15 @@ app.use('/api/stats',       statsRoutes);
 app.use('/api/knockout',    knockoutRoutes);
 app.use('/api/reports',     reportRoutes);
 
-// ── Health check ───────────────────────────────────────────
+// ── Root & Health check ────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.json({
+    message: '🏆 Tournament Management API is online!',
+    health:  '/api/health',
+    status:  'OK',
+  });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({
     status:  'OK',
@@ -89,6 +97,23 @@ app.get('/api/health', (_req, res) => {
     version: '1.0.0',
     time:    new Date().toISOString(),
   });
+});
+
+// ── One-click Database Setup endpoint ──────────────────────
+app.get('/api/setup-db', async (_req, res) => {
+  try {
+    const applySchema = require('./run-schema');
+    const seedAdmin = require('./seed-admin');
+    await applySchema();
+    await seedAdmin();
+    res.json({
+      success: true,
+      message: '✅ Database tables created and Admin user (admin@tournament.com / Admin@123) is ready!',
+    });
+  } catch (err) {
+    console.error('Setup DB error:', err);
+    res.status(500).json({ error: 'Setup failed', message: err.message });
+  }
 });
 
 // ── Optional Static Frontend (if backend serves built frontend) ──
