@@ -1,14 +1,14 @@
 -- ============================================================
 -- Tournament Management System - Database Schema
--- Database: tournamentData
+-- Database: defaultdb
 -- Phase 1 - ER Design & Database Foundation
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS tournamentData
+CREATE DATABASE IF NOT EXISTS defaultdb
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE tournamentData;
+USE defaultdb;
 
 -- ============================================================
 -- 1. USERS / ORGANIZERS (Authentication)
@@ -48,127 +48,123 @@ CREATE TABLE IF NOT EXISTS tournaments (
 -- 3. TEAMS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS teams (
-  team_id        INT           AUTO_INCREMENT PRIMARY KEY,
-  tournament_id  INT           NOT NULL,
-  name           VARCHAR(100)  NOT NULL,
-  short_name     VARCHAR(10),
-  logo_url       VARCHAR(255),
-  home_city      VARCHAR(100),
-  coach_name     VARCHAR(100),
-  captain_id     INT,                      -- FK set after players table
-  created_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  updated_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
-  UNIQUE KEY uq_team_tournament (name, tournament_id)
+  team_id         INT           AUTO_INCREMENT PRIMARY KEY,
+  tournament_id   INT           NOT NULL,
+  name            VARCHAR(100)  NOT NULL,
+  short_name      VARCHAR(10),
+  logo_url        VARCHAR(500),
+  coach_name      VARCHAR(100),
+  contact_email   VARCHAR(100),
+  home_city       VARCHAR(100),
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE
 );
 
 -- ============================================================
 -- 4. PLAYERS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS players (
-  player_id      INT           AUTO_INCREMENT PRIMARY KEY,
-  team_id        INT           NOT NULL,
-  tournament_id  INT           NOT NULL,
-  full_name      VARCHAR(100)  NOT NULL,
-  jersey_number  INT,
-  position       VARCHAR(50),           -- e.g. Batsman, Bowler, All-rounder, Goalkeeper, etc.
-  date_of_birth  DATE,
-  nationality    VARCHAR(50),
-  is_active      BOOLEAN       DEFAULT TRUE,
-  created_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  updated_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (team_id)       REFERENCES teams(team_id)           ON DELETE CASCADE,
-  FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
-  UNIQUE KEY uq_jersey_team (jersey_number, team_id)
+  player_id       INT           AUTO_INCREMENT PRIMARY KEY,
+  team_id         INT           NOT NULL,
+  first_name      VARCHAR(50)   NOT NULL,
+  last_name       VARCHAR(50)   NOT NULL,
+  jersey_number   INT,
+  role            ENUM('batsman','bowler','all_rounder','wicket_keeper','forward','midfielder','defender','goalkeeper','player') DEFAULT 'player',
+  date_of_birth   DATE,
+  email           VARCHAR(100),
+  phone           VARCHAR(20),
+  is_captain      BOOLEAN       DEFAULT FALSE,
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (team_id) REFERENCES teams(team_id) ON DELETE CASCADE
 );
-
--- Back-fill captain FK on teams
-ALTER TABLE teams
-  ADD CONSTRAINT fk_captain FOREIGN KEY (captain_id) REFERENCES players(player_id) ON DELETE SET NULL;
 
 -- ============================================================
 -- 5. VENUES
 -- ============================================================
 CREATE TABLE IF NOT EXISTS venues (
-  venue_id       INT           AUTO_INCREMENT PRIMARY KEY,
-  tournament_id  INT           NOT NULL,
-  name           VARCHAR(150)  NOT NULL,
-  city           VARCHAR(100),
-  country        VARCHAR(100)  DEFAULT 'India',
-  capacity       INT,
-  address        TEXT,
-  is_available   BOOLEAN       DEFAULT TRUE,
-  created_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  updated_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE
+  venue_id        INT           AUTO_INCREMENT PRIMARY KEY,
+  name            VARCHAR(150)  NOT NULL,
+  city            VARCHAR(100),
+  capacity        INT,
+  address         TEXT,
+  is_active       BOOLEAN       DEFAULT TRUE,
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- ============================================================
--- 6. UMPIRES
+-- 6. UMPIRES / OFFICIALS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS umpires (
-  umpire_id      INT           AUTO_INCREMENT PRIMARY KEY,
-  tournament_id  INT           NOT NULL,
-  full_name      VARCHAR(100)  NOT NULL,
-  nationality    VARCHAR(50),
-  experience_years INT         DEFAULT 0,
-  email          VARCHAR(100),
-  phone          VARCHAR(20),
-  is_available   BOOLEAN       DEFAULT TRUE,
-  created_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  updated_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE
+  umpire_id       INT           AUTO_INCREMENT PRIMARY KEY,
+  name            VARCHAR(100)  NOT NULL,
+  email           VARCHAR(100),
+  phone           VARCHAR(20),
+  experience_years INT          DEFAULT 0,
+  certification_level ENUM('national','international','state','club') DEFAULT 'club',
+  is_available    BOOLEAN       DEFAULT TRUE,
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- ============================================================
--- 7. MATCHES
+-- 7. MATCHES / SCHEDULE
 -- ============================================================
 CREATE TABLE IF NOT EXISTS matches (
-  match_id         INT           AUTO_INCREMENT PRIMARY KEY,
-  tournament_id    INT           NOT NULL,
-  home_team_id     INT           NOT NULL,
-  away_team_id     INT           NOT NULL,
-  venue_id         INT,
-  umpire_id        INT,
-  match_date       DATE          NOT NULL,
-  match_time       TIME,
-  round            VARCHAR(50)   NOT NULL DEFAULT 'Group Stage',
-                                 -- 'Group Stage', 'Semi-Final 1', 'Semi-Final 2', 'Final'
-  match_number     INT,
-  status           ENUM('scheduled','ongoing','completed','postponed','cancelled')
-                                 NOT NULL DEFAULT 'scheduled',
-  notes            TEXT,
-  created_at       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  updated_at       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  match_id        INT           AUTO_INCREMENT PRIMARY KEY,
+  tournament_id   INT           NOT NULL,
+  round_number    INT           DEFAULT 1,
+  match_number    INT,
+  home_team_id    INT           NOT NULL,
+  away_team_id    INT           NOT NULL,
+  venue_id        INT,
+  umpire_id       INT,
+  match_date      DATE          NOT NULL,
+  match_time      TIME,
+  status          ENUM('scheduled','ongoing','completed','cancelled','abandoned') NOT NULL DEFAULT 'scheduled',
+  stage           ENUM('group','quarter_final','semi_final','final') DEFAULT 'group',
+  notes           TEXT,
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
-  FOREIGN KEY (home_team_id)  REFERENCES teams(team_id)            ON DELETE CASCADE,
-  FOREIGN KEY (away_team_id)  REFERENCES teams(team_id)            ON DELETE CASCADE,
-  FOREIGN KEY (venue_id)      REFERENCES venues(venue_id)          ON DELETE SET NULL,
-  FOREIGN KEY (umpire_id)     REFERENCES umpires(umpire_id)        ON DELETE SET NULL,
-  CHECK (home_team_id <> away_team_id)
+  FOREIGN KEY (home_team_id)  REFERENCES teams(team_id)       ON DELETE CASCADE,
+  FOREIGN KEY (away_team_id)  REFERENCES teams(team_id)       ON DELETE CASCADE,
+  FOREIGN KEY (venue_id)      REFERENCES venues(venue_id)     ON DELETE SET NULL,
+  FOREIGN KEY (umpire_id)     REFERENCES umpires(umpire_id)   ON DELETE SET NULL,
+  CONSTRAINT chk_different_teams CHECK (home_team_id <> away_team_id)
 );
 
 -- ============================================================
 -- 8. MATCH RESULTS
 -- ============================================================
 CREATE TABLE IF NOT EXISTS match_results (
-  result_id         INT           AUTO_INCREMENT PRIMARY KEY,
-  match_id          INT           NOT NULL UNIQUE,
-  winner_team_id    INT,                    -- NULL = draw/no result
-  home_score        VARCHAR(50),            -- flexible: "245/8 (50 ov)" or "3"
-  away_score        VARCHAR(50),
-  margin            VARCHAR(100),           -- e.g. "7 wickets" or "2 goals"
-  is_draw           BOOLEAN       DEFAULT FALSE,
-  man_of_match_id   INT,                    -- player_id
-  result_notes      TEXT,
-  recorded_at       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (match_id)          REFERENCES matches(match_id)     ON DELETE CASCADE,
-  FOREIGN KEY (winner_team_id)    REFERENCES teams(team_id)        ON DELETE SET NULL,
-  FOREIGN KEY (man_of_match_id)   REFERENCES players(player_id)    ON DELETE SET NULL
+  result_id       INT           AUTO_INCREMENT PRIMARY KEY,
+  match_id        INT           NOT NULL UNIQUE,
+  winner_team_id  INT,
+  loser_team_id   INT,
+  is_draw         BOOLEAN       DEFAULT FALSE,
+  home_score      INT           DEFAULT 0,
+  away_score      INT           DEFAULT 0,
+  home_wickets    INT           DEFAULT 0,
+  away_wickets    INT           DEFAULT 0,
+  home_overs      DECIMAL(4,1)  DEFAULT 0.0,
+  away_overs      DECIMAL(4,1)  DEFAULT 0.0,
+  result_description VARCHAR(255),
+  man_of_the_match_id INT,
+  recorded_by     INT,
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (match_id)            REFERENCES matches(match_id)       ON DELETE CASCADE,
+  FOREIGN KEY (winner_team_id)      REFERENCES teams(team_id)         ON DELETE SET NULL,
+  FOREIGN KEY (loser_team_id)       REFERENCES teams(team_id)         ON DELETE SET NULL,
+  FOREIGN KEY (man_of_the_match_id) REFERENCES players(player_id)     ON DELETE SET NULL,
+  FOREIGN KEY (recorded_by)         REFERENCES users(user_id)          ON DELETE SET NULL
 );
 
 -- ============================================================
--- 9. POINTS TABLE / STANDINGS
+-- 9. STANDINGS / POINTS TABLE
 -- ============================================================
 CREATE TABLE IF NOT EXISTS standings (
   standing_id     INT           AUTO_INCREMENT PRIMARY KEY,
@@ -179,64 +175,62 @@ CREATE TABLE IF NOT EXISTS standings (
   losses          INT           DEFAULT 0,
   draws           INT           DEFAULT 0,
   points          INT           DEFAULT 0,
-  net_run_rate    DECIMAL(8,4)  DEFAULT 0.0000,    -- sport-specific
+  net_run_rate    DECIMAL(8,4)  DEFAULT 0.0000,
   goals_for       INT           DEFAULT 0,
   goals_against   INT           DEFAULT 0,
   rank_position   INT,
   updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
-  FOREIGN KEY (team_id)       REFERENCES teams(team_id)            ON DELETE CASCADE,
-  UNIQUE KEY uq_standing (tournament_id, team_id)
+  FOREIGN KEY (team_id)       REFERENCES teams(team_id)             ON DELETE CASCADE,
+  UNIQUE KEY uq_tournament_team (tournament_id, team_id)
 );
 
 -- ============================================================
--- 10. PLAYER STATISTICS
+-- 10. PLAYER MATCH STATS
 -- ============================================================
-CREATE TABLE IF NOT EXISTS player_statistics (
-  stat_id           INT           AUTO_INCREMENT PRIMARY KEY,
-  player_id         INT           NOT NULL,
-  tournament_id     INT           NOT NULL,
-  matches_played    INT           DEFAULT 0,
-  -- Generic sport stats (can be extended)
-  goals_scored      INT           DEFAULT 0,
-  assists           INT           DEFAULT 0,
-  yellow_cards      INT           DEFAULT 0,
-  red_cards         INT           DEFAULT 0,
-  -- Cricket-specific (nullable for non-cricket)
-  runs_scored       INT           DEFAULT 0,
-  balls_faced       INT           DEFAULT 0,
-  fifties           INT           DEFAULT 0,
-  hundreds          INT           DEFAULT 0,
-  wickets_taken     INT           DEFAULT 0,
-  overs_bowled      DECIMAL(5,1)  DEFAULT 0.0,
-  runs_conceded     INT           DEFAULT 0,
-  catches           INT           DEFAULT 0,
-  man_of_match_count INT          DEFAULT 0,
-  updated_at        TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (player_id)     REFERENCES players(player_id)        ON DELETE CASCADE,
-  FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
-  UNIQUE KEY uq_player_tournament_stat (player_id, tournament_id)
-);
-
--- ============================================================
--- 11. KNOCKOUT BRACKET
--- ============================================================
-CREATE TABLE IF NOT EXISTS knockout_bracket (
-  bracket_id      INT           AUTO_INCREMENT PRIMARY KEY,
-  tournament_id   INT           NOT NULL,
-  stage           ENUM('semi_final','final') NOT NULL,
-  match_id        INT,                          -- links to matches table
-  team1_id        INT,
-  team2_id        INT,
-  winner_id       INT,
-  bracket_order   INT           DEFAULT 1,      -- 1 or 2 for semi-finals
+CREATE TABLE IF NOT EXISTS player_match_stats (
+  stat_id         INT           AUTO_INCREMENT PRIMARY KEY,
+  match_id        INT           NOT NULL,
+  player_id       INT           NOT NULL,
+  team_id         INT           NOT NULL,
+  runs_scored     INT           DEFAULT 0,
+  balls_faced     INT           DEFAULT 0,
+  fours           INT           DEFAULT 0,
+  sixes           INT           DEFAULT 0,
+  strike_rate     DECIMAL(6,2)  DEFAULT 0.00,
+  overs_bowled    DECIMAL(4,1)  DEFAULT 0.0,
+  runs_conceded   INT           DEFAULT 0,
+  wickets_taken   INT           DEFAULT 0,
+  maidens         INT           DEFAULT 0,
+  economy_rate    DECIMAL(6,2)  DEFAULT 0.00,
+  catches         INT           DEFAULT 0,
+  stumpings       INT           DEFAULT 0,
+  run_outs        INT           DEFAULT 0,
+  goals           INT           DEFAULT 0,
+  assists         INT           DEFAULT 0,
+  yellow_cards    INT           DEFAULT 0,
+  red_cards       INT           DEFAULT 0,
   created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
-  updated_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (match_id)  REFERENCES matches(match_id)   ON DELETE CASCADE,
+  FOREIGN KEY (player_id) REFERENCES players(player_id)  ON DELETE CASCADE,
+  FOREIGN KEY (team_id)   REFERENCES teams(team_id)     ON DELETE CASCADE,
+  UNIQUE KEY uq_player_match (player_id, match_id)
+);
+
+-- ============================================================
+-- 11. KNOCKOUT STAGES
+-- ============================================================
+CREATE TABLE IF NOT EXISTS knockout_stages (
+  stage_id        INT           AUTO_INCREMENT PRIMARY KEY,
+  tournament_id   INT           NOT NULL,
+  stage_type      ENUM('quarter_final','semi_final','final','third_place') NOT NULL,
+  match_id        INT           UNIQUE,
+  bracket_position INT          DEFAULT 1,
+  next_stage_id   INT,
+  created_at      TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (tournament_id) REFERENCES tournaments(tournament_id) ON DELETE CASCADE,
-  FOREIGN KEY (match_id)      REFERENCES matches(match_id)          ON DELETE SET NULL,
-  FOREIGN KEY (team1_id)      REFERENCES teams(team_id)             ON DELETE SET NULL,
-  FOREIGN KEY (team2_id)      REFERENCES teams(team_id)             ON DELETE SET NULL,
-  FOREIGN KEY (winner_id)     REFERENCES teams(team_id)             ON DELETE SET NULL
+  FOREIGN KEY (match_id)      REFERENCES matches(match_id)          ON DELETE CASCADE,
+  FOREIGN KEY (next_stage_id) REFERENCES knockout_stages(stage_id)  ON DELETE SET NULL
 );
 
 -- ============================================================
@@ -257,7 +251,7 @@ INSERT INTO users (username, email, password_hash, role, full_name)
 VALUES (
   'admin',
   'admin@tournament.com',
-  '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',  -- Admin@123
+  '$2a$10$p.6ztgNPEmNwmmzZxILXauXxtj9jhJiSu7WjIMkPGpBn.JRx3buzK',
   'admin',
   'Tournament Administrator'
-) ON DUPLICATE KEY UPDATE user_id = user_id;
+) ON DUPLICATE KEY UPDATE password_hash = '$2a$10$p.6ztgNPEmNwmmzZxILXauXxtj9jhJiSu7WjIMkPGpBn.JRx3buzK';
