@@ -1,6 +1,8 @@
 const express    = require('express');
 const cors       = require('cors');
 const dotenv     = require('dotenv');
+const path       = require('path');
+const fs         = require('fs');
 
 dotenv.config();
 
@@ -15,27 +17,40 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://127.0.0.1:5174',
 ];
+
 if (process.env.FRONTEND_URL) {
   process.env.FRONTEND_URL.split(',').forEach((url) => {
-    const trimmed = url.trim();
-    if (trimmed && !allowedOrigins.includes(trimmed)) allowedOrigins.push(trimmed);
+    const trimmed = url.trim().replace(/\/$/, '');
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed);
+    }
   });
 }
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+    if (
+      !origin ||
+      process.env.FRONTEND_URL === '*' ||
+      allowedOrigins.includes(origin) ||
+      allowedOrigins.includes(origin.replace(/\/$/, '')) ||
+      origin.startsWith('http://localhost:') ||
+      origin.startsWith('http://127.0.0.1:') ||
+      origin.endsWith('.onrender.com') ||
+      origin.endsWith('.railway.app')
+    ) {
       callback(null, true);
     } else {
-      callback(new Error('Blocked by CORS'));
+      callback(new Error(`Blocked by CORS: ${origin}`));
     }
   },
   credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ── Database connection (initialise pool) ──────────────────
+// ── Database connection (initialise pool & auto migrations) ──
 require('./database/db');
 
 // ── Route imports ──────────────────────────────────────────
@@ -76,7 +91,17 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-// ── 404 handler ────────────────────────────────────────────
+// ── Optional Static Frontend (if backend serves built frontend) ──
+const frontendDist = path.join(__dirname, '../frontend/dist');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
+
+// ── 404 handler for API routes ─────────────────────────────
 app.use((_req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
@@ -89,7 +114,7 @@ app.use((err, _req, res, _next) => {
 
 // ── Start ──────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`🚀 Tournament API running on http://localhost:${PORT}`);
+  console.log(`🚀 Tournament API running on port ${PORT}`);
   console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
