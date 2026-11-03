@@ -2,9 +2,10 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 function getPoolConfig() {
-  const dbUrl = process.env.DATABASE_URL || process.env.MYSQL_URL;
+  const rawUrl = process.env.DATABASE_URL || process.env.MYSQL_URL;
 
-  if (dbUrl) {
+  if (rawUrl && rawUrl.trim()) {
+    const dbUrl = rawUrl.trim();
     try {
       const url = new URL(dbUrl);
       const isRemote = !['localhost', '127.0.0.1'].includes(url.hostname);
@@ -14,11 +15,11 @@ function getPoolConfig() {
         (isRemote && process.env.DB_SSL !== 'false' && !url.hostname.endsWith('.internal'));
 
       const config = {
-        host: url.hostname,
+        host: url.hostname.trim(),
         port: parseInt(url.port, 10) || 3306,
-        user: decodeURIComponent(url.username),
+        user: decodeURIComponent(url.username).trim(),
         password: decodeURIComponent(url.password),
-        database: url.pathname.replace(/^\//, '') || process.env.DB_NAME || 'tournamentData',
+        database: (url.pathname.replace(/^\//, '') || process.env.DB_NAME || 'tournamentData').trim(),
         waitForConnections: true,
         connectionLimit: 10,
         queueLimit: 0,
@@ -35,11 +36,11 @@ function getPoolConfig() {
     }
   }
 
-  const host = process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1';
+  const host = (process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1').trim();
   const port = parseInt(process.env.DB_PORT || process.env.MYSQLPORT, 10) || 3306;
-  const user = process.env.DB_USER || process.env.MYSQLUSER || 'root';
+  const user = (process.env.DB_USER || process.env.MYSQLUSER || 'root').trim();
   const password = process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '';
-  const database = process.env.DB_NAME || process.env.MYSQLDATABASE || 'tournamentData';
+  const database = (process.env.DB_NAME || process.env.MYSQLDATABASE || 'tournamentData').trim();
 
   const isRemote = !['localhost', '127.0.0.1'].includes(host);
   const useSsl =
