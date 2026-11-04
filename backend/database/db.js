@@ -69,7 +69,7 @@ function getPoolConfig() {
 
 const pool = mysql.createPool(getPoolConfig());
 
-// Test connection on startup and run migrations if AUTO_MIGRATE=true
+// Test connection on startup and run migrations if tables don't exist
 (async () => {
   try {
     const conn = await pool.getConnection();
@@ -78,13 +78,15 @@ const pool = mysql.createPool(getPoolConfig());
     console.log(`✅ MySQL connected successfully → database: ${currentDb}`);
     conn.release();
 
-    if (process.env.AUTO_MIGRATE === 'true') {
-      console.log('🔄 AUTO_MIGRATE is true: applying schema and default seed...');
+    // Check if tables already exist
+    const [tables] = await pool.query("SHOW TABLES LIKE 'users'");
+    if (tables.length === 0 || process.env.AUTO_MIGRATE === 'true') {
+      console.log('🔄 Database tables not found or AUTO_MIGRATE=true: applying schema and default seed...');
       const applySchema = require('../run-schema');
       const seedAdmin = require('../seed-admin');
       await applySchema();
       await seedAdmin();
-      console.log('✨ Auto-migration complete.');
+      console.log('✨ Auto-migration complete. Admin account is ready.');
     }
   } catch (err) {
     console.error('❌ MySQL connection failed:', err.message);

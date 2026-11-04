@@ -26,7 +26,7 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { user_id: user.user_id, role: user.role, username: user.username },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'tournament_default_jwt_secret_key_2026',
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 

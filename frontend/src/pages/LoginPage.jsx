@@ -3,8 +3,8 @@ import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const [form, setForm]     = useState({ email: '', password: '' });
-  const [error, setError]   = useState('');
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -100,11 +100,11 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div style={{ marginTop: '24px', padding: '16px', background: 'var(--clr-surface-2)', border: '1px solid var(--clr-border)', borderRadius: '10px', fontSize: '12px', color: 'var(--clr-text-muted)' }}>
+          {/* <div style={{ marginTop: '24px', padding: '16px', background: 'var(--clr-surface-2)', border: '1px solid var(--clr-border)', borderRadius: '10px', fontSize: '12px', color: 'var(--clr-text-muted)' }}>
             <strong style={{ color: 'var(--clr-text-secondary)' }}>Demo credentials:</strong><br />
             Email: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>admin@tournament.com</code><br />
-            Password: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>Admin@123</code>
-          </div>
+            Password: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>password</code>
+          </div>  gfjfgjfjfgjfxjf*/}
         </div>
       </div>
     </div>
