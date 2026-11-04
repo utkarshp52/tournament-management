@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 export default function LoginPage() {
   const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -14,97 +15,148 @@ export default function LoginPage() {
     try {
       await login(form.email, form.password);
     } catch (err) {
-      setError(err.message || 'Login failed');
+      setError(err.message || 'Invalid credentials. Please verify your email/password.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleQuickFill = () => {
+    setForm({
+      email: 'admin@tournament.com',
+      password: 'Admin@123',
+    });
+    setError('');
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--clr-bg)', padding: '24px' }}>
+    <div className="login-page-container">
+      {/* Dynamic Ambient Background Elements */}
+      <div className="login-ambient-glow glow-top" />
+      <div className="login-ambient-glow glow-bottom" />
+      <div className="login-grid-pattern" />
 
-      {/* Background decorations */}
-      <div style={{
-        position: 'fixed', top: '-200px', left: '-200px',
-        width: '500px', height: '500px',
-        background: 'radial-gradient(circle, rgba(16,185,129,0.15), transparent 70%)',
-        borderRadius: '50%', pointerEvents: 'none'
-      }} />
-      <div style={{
-        position: 'fixed', bottom: '-200px', right: '-200px',
-        width: '500px', height: '500px',
-        background: 'radial-gradient(circle, rgba(249,115,22,0.12), transparent 70%)',
-        borderRadius: '50%', pointerEvents: 'none'
-      }} />
-
-      <div style={{ width: '100%', maxWidth: '440px', position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{
-            width: '64px', height: '64px',
-            background: 'var(--grad-primary)',
-            borderRadius: '18px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '28px', margin: '0 auto 16px',
-            boxShadow: '0 8px 24px rgba(16,185,129,0.35)'
-          }}>🏆</div>
-          <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '28px', fontWeight: '800', marginBottom: '4px', color: 'var(--clr-text-primary)' }}>
-            Tournament Manager
-          </h1>
-          <p style={{ color: 'var(--clr-text-muted)', fontSize: '14px' }}>
-            Sign in to manage your tournaments
+      <div className="login-content-box">
+        {/* Brand Crest */}
+        <div className="login-brand-header">
+          <div className="login-trophy-badge">
+            <span className="trophy-emoji">🏆</span>
+            <div className="badge-glow-ring" />
+          </div>
+          <span className="pro-pill-tag">ENTERPRISE EDITION</span>
+          <h1 className="login-title">Tournament Manager</h1>
+          <p className="login-subtitle">
+            Professional Sports Operations & League Management Suite
           </p>
         </div>
 
-        {/* Card */}
-        <div className="card" style={{ padding: '32px' }}>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {error && (
-              <div className="alert alert-danger">{error}</div>
-            )}
+        {/* Elevated Form Card */}
+        <div className="login-card-elevated">
+          {error && (
+            <div className="login-alert-banner">
+              <span className="alert-icon">⚠️</span>
+              <div className="alert-text">{error}</div>
+            </div>
+          )}
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="login-email">Email or Username</label>
-              <input
-                id="login-email"
-                type="text"
-                className="form-control"
-                placeholder="admin@tournament.com or admin"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                required
-                autoFocus
-              />
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="input-field-group">
+              <label className="input-field-label" htmlFor="login-email">
+                Email Address or Username
+              </label>
+              <div className="input-with-icon">
+                <span className="input-adornment">✉️</span>
+                <input
+                  id="login-email"
+                  type="text"
+                  className="modern-text-input"
+                  placeholder="admin@tournament.com"
+                  value={form.email}
+                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                  required
+                  autoFocus
+                />
+              </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="login-password">Password</label>
-              <input
-                id="login-password"
-                type="password"
-                className="form-control"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                required
-              />
+            <div className="input-field-group">
+              <div className="password-header-flex">
+                <label className="input-field-label" htmlFor="login-password">
+                  Password
+                </label>
+                <button
+                  type="button"
+                  className="btn-toggle-pass"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              <div className="input-with-icon">
+                <span className="input-adornment">🔒</span>
+                <input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}
+                  className="modern-text-input"
+                  placeholder="••••••••••••"
+                  value={form.password}
+                  onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                  required
+                />
+              </div>
             </div>
 
             <button
               id="login-submit"
               type="submit"
-              className="btn btn-primary btn-lg w-full"
+              className="btn-login-gradient"
               disabled={loading}
             >
-              {loading ? '⏳ Signing in...' : '🔐 Sign In'}
+              {loading ? (
+                <span className="btn-loading-flex">
+                  <span className="mini-spinner" />
+                  Authenticating...
+                </span>
+              ) : (
+                <span className="btn-label-flex">
+                  Sign In to Dashboard →
+                </span>
+              )}
             </button>
           </form>
 
-          {/* <div style={{ marginTop: '24px', padding: '16px', background: 'var(--clr-surface-2)', border: '1px solid var(--clr-border)', borderRadius: '10px', fontSize: '12px', color: 'var(--clr-text-muted)' }}>
-            <strong style={{ color: 'var(--clr-text-secondary)' }}>Demo credentials:</strong><br />
-            Email: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>admin@tournament.com</code><br />
-            Password: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>password</code>
-          </div>  gfjfgjfjfgjfxjf*/}
+          {/* Quick-fill Demo Box */}
+          {/* <div className="demo-credentials-pillbox">
+            <div className="demo-header-row">
+              <span className="demo-badge">QUICK DEMO ACCESS</span>
+              <button
+                type="button"
+                className="btn-auto-fill"
+                onClick={handleQuickFill}
+                title="Click to automatically fill demo account credentials"
+              >
+                ⚡ Fill Credentials
+              </button>
+            </div>
+            <div className="demo-credentials-body">
+              <div className="demo-cred-row">
+                <span className="demo-cred-key">Email:</span>
+                <code className="demo-code">admin@tournament.com</code>
+              </div>
+              <div className="demo-cred-row">
+                <span className="demo-cred-key">Password:</span>
+                <code className="demo-code">Admin@123</code>
+              </div>
+            </div>
+          </div> */}
+        </div>
+
+        {/* Footer info */}
+        <div className="login-trust-footer">
+          <span>🔒 End-to-end Encrypted Session</span>
+          <span className="separator">•</span>
+          <span>⚡ High-Availability Cloud</span>
         </div>
       </div>
     </div>
