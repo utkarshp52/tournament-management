@@ -104,7 +104,7 @@ export default function LoginPage() {
             <strong style={{ color: 'var(--clr-text-secondary)' }}>Demo credentials:</strong><br />
             Email: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>admin@tournament.com</code><br />
             Password: <code style={{ color: 'var(--clr-primary)', fontWeight: '700' }}>password</code>
-          </div> */}
+          </div>  gfjfgjfjfgjfxjf*/}
         </div>
       </div>
     </div>
